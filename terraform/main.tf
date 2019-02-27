@@ -94,12 +94,18 @@ module "elb-sg" {
 
 #####   END OF SECURITY GROUP MODULE 
 
+## EIP for cool website 
+resource "aws_eip" "cool-website-pubip" {
+  instance = "${aws_instance.cool-website-instance.id}"
+  vpc      = true
+}
 
 ## EC2 CREATION 
 resource "aws_instance" "cool-website-instance" {
   ami           = "${var.ami-id}"
   instance_type = "t2.micro"
   key_name = "${var.aws-key-pair}"
+  public_ip = "${aws_eip.cool-website-pubip.id}"
   subnet_id = "${element(module.vpc.private_subnets,0)}"
   vpc_security_group_ids = ["${module.cool-website-sg.this_security_group_id}"]
   tags = {
@@ -124,11 +130,7 @@ resource "aws_instance" "cool-website-instance" {
   }
 }
 
-## EIP for cool website 
-resource "aws_eip" "lb" {
-  instance = "${aws_instance.cool-website-instance.id}"
-  vpc      = true
-}
+
 
 ## LOAD BALANCER 
 
