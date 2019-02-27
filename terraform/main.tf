@@ -124,6 +124,12 @@ resource "aws_instance" "cool-website-instance" {
   }
 }
 
+## EIP for cool website 
+resource "aws_eip" "lb" {
+  instance = "${aws_instance.cool-website-instance.id}"
+  vpc      = true
+}
+
 ## LOAD BALANCER 
 
 resource "aws_elb" "cool-website-lb" {
