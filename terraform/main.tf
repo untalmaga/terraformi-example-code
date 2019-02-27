@@ -106,7 +106,7 @@ resource "aws_instance" "cool-website-instance" {
   instance_type = "t2.micro"
   key_name = "${var.aws-key-pair}"
   public_ip = "${aws_eip.cool-website-pubip.id}"
-  subnet_id = "${element(module.vpc.private_subnets,1)}"
+  subnet_id = "${element(module.vpc.ppublic_subnets,0)}"
   //subnet_id = "${module.vpc.private_subnets}"
   vpc_security_group_ids = ["${module.cool-website-sg.this_security_group_id}"]
   tags = {
