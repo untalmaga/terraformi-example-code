@@ -13,5 +13,8 @@ variable "aws-key-pair" {
     default = "fernando-work"
 }
 
+variable "ssh_key" {}
+
+
 
 
