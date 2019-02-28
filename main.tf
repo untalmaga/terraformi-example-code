@@ -105,7 +105,7 @@ resource "aws_instance" "cool-website-instance" {
 
   connection {
     user = "ubuntu"
-    private_key = "${var.fernando-work}"
+    private_key = "${var.ssh_key}"
   }
 
   tags = {
