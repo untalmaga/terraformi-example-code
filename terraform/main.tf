@@ -103,7 +103,6 @@ resource "aws_instance" "cool-website-instance" {
   subnet_id = ["${element(module.vpc.public_subnets, 0)}"]
   //subnet_id = "${element(module.vpc.public_subnets, 0)}"
   key_name = "${var.aws-key-pair}"
-  //subnet_id = "${module.vpc.private_subnets}"
   vpc_security_group_ids = ["${module.cool-website-sg.this_security_group_id}"]
   tags = {
     Name = "cool-website"
