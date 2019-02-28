@@ -106,6 +106,11 @@ resource "aws_instance" "cool-website-instance" {
     Name = "cool-website"
   }
 
+  connection {
+    user = "ubuntur"
+    private_key = "${var.fernando-work}"
+  }
+
    provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
