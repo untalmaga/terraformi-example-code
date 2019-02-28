@@ -15,7 +15,7 @@ module "vpc" {
   name            = "cool-website-vpc"
   cidr            = "10.0.0.0/16"
   azs             = ["us-west-2a"]
-  private_subnets = ["10.0.22.0/24"]
+  //private_subnets = ["10.0.22.0/24"]
   public_subnets  = ["10.0.44.0/24"]
 
   enable_nat_gateway = true
@@ -100,7 +100,7 @@ module "elb-sg" {
 resource "aws_instance" "cool-website-instance" {
   ami           = "${var.ami-id}"
   instance_type = "t2.micro"
-  subnets         = ["${element(module.vpc.public_subnets, 0)}"]
+  subnet_id         = "${element(module.vpc.public_subnets, 0)}"
   //subnet_id = ["${element(module.vpc.public_subnets, 0)}"]
   //subnet_id = "${element(module.vpc.public_subnets, 0)}"
   key_name = "${var.aws-key-pair}"
