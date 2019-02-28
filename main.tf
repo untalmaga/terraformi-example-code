@@ -104,8 +104,8 @@ resource "aws_instance" "cool-website-instance" {
   vpc_security_group_ids = ["${module.cool-website-sg.this_security_group_id}"]
 
   connection {
-    user = "ubuntur"
-    private_key = "${var.fernando-work-pem}"
+    user = "ubuntu"
+    private_key = "${var.fernando-work}"
   }
 
   tags = {
