@@ -102,13 +102,14 @@ resource "aws_instance" "cool-website-instance" {
   key_name = "${var.aws-key-pair}"
   subnet_id = "${element(module.vpc.public_subnets, 0)}"
   vpc_security_group_ids = ["${module.cool-website-sg.this_security_group_id}"]
-  tags = {
-    Name = "cool-website"
-  }
 
   connection {
     user = "ubuntur"
     private_key = "${var.fernando-work-pem}"
+  }
+
+  tags = {
+    Name = "cool-website"
   }
 
    provisioner "remote-exec" {
