@@ -108,7 +108,7 @@ resource "aws_instance" "cool-website-instance" {
 
   connection {
     user = "ubuntur"
-    private_key = "${var.fernando-work}"
+    private_key = "${var.fernando-work-pem}"
   }
 
    provisioner "remote-exec" {
