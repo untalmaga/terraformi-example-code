@@ -57,7 +57,11 @@ module "cool-website-sg" {
   ]
   egress_with_self = [
     {
-      rule = "all-all"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      description = "open!"
+      cidr_blocks = "0.0.0.0/0"
     }
   ]
 }
@@ -87,7 +91,11 @@ module "elb-sg" {
   ]
   egress_with_self = [
     {
-      rule = "all-all"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      description = "open!"
+      cidr_blocks = "0.0.0.0/0"
     }
   ]
 }
