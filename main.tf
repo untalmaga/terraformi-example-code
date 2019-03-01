@@ -126,8 +126,8 @@ resource "aws_instance" "cool-website-instance" {
       "sudo apt-get -y install software-properties-common",
       "sudo apt-add-repository --yes --update ppa:ansible/ansible",
       "sudo apt-get -y install ansible git", 
-      "sudo cd /tmp && sudo git clone https://github.com/untalmaga/ansible-terraformi.git",
-      "sudo ansible-playbook playbook.yml"
+      "sudo git clone https://github.com/untalmaga/ansible-terraformi.git /tmp",
+      "sudo ansible-playbook /tmp/playbook.yml"
     ]
   }
 }
