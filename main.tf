@@ -32,74 +32,69 @@ module "vpc" {
 // Using VPC module 
 // https://github.com/terraform-aws-modules/terraform-aws-security-group#security-group-with-predefined-rules
 
-module "cool-website-sg" {
-  source = "terraform-aws-modules/security-group/aws"
+resource "aws_security_group" "cool-website-sg" {
+  name   = "cool-website-sg"
+  vpc_id = "${module.vpc.vpc_id}"
 
-  name        = "cool-website-sg"
-  description = "SG for cool website"
-  vpc_id      = "${module.vpc.vpc_id}"
+  # SSH access from anywhere
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-  ingress_with_cidr_blocks = [
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      description = "LB service ports"
-      cidr_blocks = "10.0.0.0/16"
-    },
-    {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      description = "LB service ports"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
-  egress_with_self = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      description = "open!"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
+  # HTTP access from the VPC
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # outbound internet access
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  
+
 }
 
-module "elb-sg" {
-  source = "terraform-aws-modules/security-group/aws"
+# ELB SG #
+resource "aws_security_group" "elb-sg" {
+  name   = "elb-sg"
+  vpc_id = "${module.vpc.vpc_id}"
 
-  name        = "elb-sg"
-  description = "SG for ELB"
-  vpc_id      = "${module.vpc.vpc_id}"
+  #Allow HTTP from anywhere
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-  ingress_with_cidr_blocks = [
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      description = "LB service ports"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      description = "LB service ports"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
-  egress_with_self = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      description = "open!"
-      cidr_blocks = "0.0.0.0/0"
-    }
-  ]
+  #allow all outbound
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # outbound internet access
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  
 }
-
 #####   END OF SECURITY GROUP MODULE 
 
 
@@ -109,8 +104,7 @@ resource "aws_instance" "cool-website-instance" {
   instance_type = "t2.micro"
   key_name = "${var.aws-key-pair}"
   subnet_id = "${element(module.vpc.public_subnets, 0)}"
-  vpc_security_group_ids = ["${module.cool-website-sg.this_security_group_id}"]
-
+  vpc_security_group_ids = ["${aws_security_group.cool-website-sg.id}"]
   connection {
     user = "ubuntu"
     private_key = "${var.ssh_key}"
@@ -147,7 +141,7 @@ resource "aws_elb" "cool-website-lb" {
   name = "cool-website-lb"
 
   subnets         = ["${element(module.vpc.public_subnets, 0)}"]  
-  security_groups = ["${module.elb-sg.this_security_group_id}"]
+  security_groups = ["${aws_security_group.elb-sg.id}"]
   instances       = ["${aws_instance.cool-website-instance.id}"]
 
   listener {
