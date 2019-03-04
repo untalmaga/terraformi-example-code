@@ -117,7 +117,7 @@ resource "aws_instance" "cool-website-instance" {
    provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo install nginx -y && service nginx start",
+      "sudo apt-get install nginx -y && service nginx start",
       "sudo git clone https://github.com/untalmaga/code-cool-website.git /var/www/html/cool-website"
     ]
   }
