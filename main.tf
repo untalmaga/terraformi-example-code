@@ -132,6 +132,7 @@ resource "aws_instance" "cool-website-instance" {
     inline = [
       "sudo mv /tmp/cool-website.conf /etc/nginx/sites-enabled/",
       "sudo chown -R www-data:www-data /var/www/html/",
+      "sudo chown www-data:www-data /etc/nginx/sites-enabled/*",
       "sudo service nginx restart"
     ]
   }
