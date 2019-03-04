@@ -105,6 +105,7 @@ resource "aws_instance" "cool-website-instance" {
   key_name = "${var.aws-key-pair}"
   subnet_id = "${element(module.vpc.public_subnets, 0)}"
   vpc_security_group_ids = ["${aws_security_group.cool-website-sg.id}"]
+  
   connection {
     user = "ubuntu"
     private_key = "${var.ssh_key}"
@@ -124,12 +125,13 @@ resource "aws_instance" "cool-website-instance" {
 
   provisioner "file" {
     source = "conf/cool-website.conf"
-    destination = "/etc/nginx/sites-enabled/cool-website.conf"
+    destination = "/tmp/cool-website.conf"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chown -R www-data:www-data /var/www/html/",
+      "sudo mv /tmp/cool-website.conf /etc/nginx/sites-enabled/",
+      "sudo chown -R www-data:www-data /var/www/html/",
       "sudo service nginx restart"
     ]
   }
