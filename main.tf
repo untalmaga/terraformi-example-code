@@ -135,7 +135,7 @@ resource "aws_instance" "cool-website-instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "chown -R www-data:www-data /var/www/html/"
+      "chown -R www-data:www-data /var/www/html/",
       "sudo service nginx restart"
     ]
   }
