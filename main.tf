@@ -123,11 +123,20 @@ resource "aws_instance" "cool-website-instance" {
    provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y install software-properties-common",
-      "sudo apt-add-repository --yes --update ppa:ansible/ansible",
-      "sudo apt-get -y install ansible git", 
-      "sudo git clone https://github.com/untalmaga/ansible-terraformi.git /tmp/ansible",
-      "sudo ansible-playbook /tmp/ansible/playbook.yml"
+      "sudo install nginx -y && service nginx start",
+      "sudo git clone https://github.com/untalmaga/code-cool-website.git /var/www/html/cool-website"
+    ]
+  }
+
+  provisioner "file" {
+    source = "conf/cool-website.conf"
+    destination = "/etc/nginx/sites-enabled/cool-website.conf"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chown -R www-data:www-data /var/www/html/"
+      "sudo service nginx restart"
     ]
   }
 }
