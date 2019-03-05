@@ -117,8 +117,8 @@ resource "aws_instance" "cool-website-instance" {
 
    provisioner "remote-exec" {
     inline = [
-      "sudo apt-get update",
-      "sudo apt-get install nginx -y && service nginx start",
+      "sudo apt update",
+      "sudo apt install nginx -y && service nginx start",
       "sudo git clone https://github.com/untalmaga/code-cool-website.git /var/www/html/cool-website"
     ]
   }
@@ -130,9 +130,9 @@ resource "aws_instance" "cool-website-instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo mv /tmp/cool-website.conf /etc/nginx/sites-enabled/",
-      "sudo chown -R www-data:www-data /var/www/html/",
-      "sudo chown www-data:www-data /etc/nginx/sites-enabled/*",
+      "sudo mv /tmp/cool-website.conf /etc/nginx/sites-enabled/ && sudo rm /etc/nginx/sites-enabled/default",
+      "sudo chown -R www-data:www-data /var/www/html/ ",
+      "sudo chown www-data:www-data /etc/nginx/sites-enabled/cool-website.conf",
       "sudo service nginx restart"
     ]
   }
